@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-02-17
+### Added
+- Official v1.0.0 stable release.
+- Standardized PM2 `ecosystem.config.cjs`.
+- Robust `server-entry.mjs` with `dotenv` and graceful shutdown.
+- Detailed `DEPLOY.md` for OpenBSD/Nginx/ACME.
+### Fixed
+- Build-safe client-side GCLID attribution.
+- Environment variable isolation on OpenBSD.
+- Nginx bootstrap protocol for SSL challenges.
+
 ## [v0.1.2] - 2026-02-17
 
 ### Added

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v0.1.2] - 2026-02-17
 
 ### Added
+- **Rebranding**: Project renamed to **TSS Overlay Kit**.
 - **Attribution Middleware**: Automated GCLID persistence (30-day HttpOnly cookie) in `routes/__root.tsx`.
 - Implemented DE-002 v4.1 "Attribution Protocol" out of the box.
 

@@ -6,7 +6,6 @@
 - Node.js v22+
 - pnpm
 
-### Setup
 ### Setup (The Orphan Branch Strategy)
 
 This kit is designed to be overlayed onto a fresh TanStack CLI scaffold using Git.

@@ -4,11 +4,11 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite dev --port 3000",
-    "build": "vite build",
+    "dev": "vinxi dev --port 3000",
+    "build": "vinxi build",
     "preview": "vite preview",
     "test": "vitest run",
-    "start": "node server-entry.mjs",
+    "start": "vinxi start",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'No lint check available'"
   },

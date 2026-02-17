@@ -5,15 +5,19 @@
 
 This guide details the standard procedure for deploying TanStack Start applications (or static sites) built with the **TSS Overlay Kit** to the Daemon Engineering OpenBSD infrastructure.
 
----
-
 ## 1. Preparation
 
-### 1.1. Server Access
+### 1.1. Server Access & Git Auth
 Ensure you have SSH access to the server. The standard management user is `otobotto`.
 
+**Git Auth (SSH Recommended):**
+To avoid entering credentials, set up an SSH key on the server and add it to GitHub:
 ```bash
-ssh otobotto@<server-ip>
+ssh-keygen -t ed25519 -C "otobotto@daemon.engineering"
+# NOTE: For zero-touch automation on servers, leave the passphrase BLANK.
+# If you used one and want to remove it: ssh-keygen -p -f ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+# Add this key to GitHub -> Settings -> SSH and GPG keys
 ```
 
 ### 1.2. Directory Structure
@@ -24,11 +28,11 @@ All web applications reside in `/var/www/htdocs/`.
 ## 2. Initial Deployment
 
 ### 2.1. Clone Repository (Admin)
-Since `/var/www/htdocs` is owned by `root`, you must use `doas` to clone initially.
+Using **SSH URLs** is preferred for automation.
 
 ```bash
 cd /var/www/htdocs/
-doas git clone https://github.com/livingstonlarus/<project_name>.git
+doas git clone git@github.com:livingstonlarus/<project_name>.git
 ```
 
 ### 2.2. Fix Ownership (Critical)

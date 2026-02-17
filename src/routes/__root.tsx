@@ -12,17 +12,8 @@ import "../app.css"
 import { createServerFn } from '@tanstack/solid-start'
 
 const setGclidCookie = createServerFn('GET', async (gclid: string) => {
-    const { getCookie, setCookie } = await import('vinxi/http')
-    const existing = getCookie('gclid')
-    if (existing !== gclid) {
-        setCookie('gclid', gclid, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 30, // 30 Days
-            path: '/',
-        })
-    }
+    const { persistGclid } = await import('../lib/server/attribution')
+    return persistGclid(gclid)
 })
 
 export const Route = createRootRoute({

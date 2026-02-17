@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* DAY MODE (Clinical / Spec Sheet) */
+        --bg-dashboard: 255 255 255;
+        /* Pure White */
+        --bg-slot: 249 250 251;
+        /* Very Light Grey for alternating rows */
+        --border-din: 156 163 175;
+        /* Visible, Technical Grey (Tailwind gray-400) */
+        --text-main: 0 0 0;
+        /* Pure Black */
+        --text-dim: 75 85 99;
+        /* Dark Grey */
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            /* NIGHT MODE (Instrument Panel) */
+            --bg-dashboard: 10 10 18;
+            /* Obsidian */
+            --bg-slot: 17 24 39;
+            /* Carbon for alternating rows */
+            --border-din: 55 65 81;
+            /* Dark Grey (Tailwind gray-700) */
+            --text-main: 243 244 246;
+            /* Off-White */
+            --text-dim: 156 163 175;
+            /* Medium Grey */
+        }
+    }
+}

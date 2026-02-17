@@ -1,0 +1,37 @@
+{
+  "name": "tss-app",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "start": "node server-entry.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'No lint check available'"
+  },
+  "dependencies": {
+    "@tanstack/solid-router": "^1.133.20",
+    "@tanstack/solid-start": "^1.132.25",
+    "autoprefixer": "^10.4.24",
+    "better-auth": "^1.4.17",
+    "drizzle-orm": "^0.45.1",
+    "lucide-solid": "^0.544.0",
+    "postcss": "^8.5.6",
+    "solid-js": "^1.9.9",
+    "tailwindcss": "^3.4.19",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@tanstack/router-plugin": "^1.133.21",
+    "@tanstack/solid-router-devtools": "^1.133.20",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "^5.7.2",
+    "vite-plugin-solid": "^2.11.10"
+  }
+}

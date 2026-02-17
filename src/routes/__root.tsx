@@ -9,24 +9,7 @@ import {
 
 import "../app.css"
 
-import { createServerFn } from '@tanstack/solid-start'
-
-const setGclidCookie = createServerFn('GET', async (gclid: string) => {
-    const { persistGclid } = await import('../lib/server/attribution')
-    return persistGclid(gclid)
-})
-
 export const Route = createRootRoute({
-    beforeLoad: async ({ location }) => {
-        // DE-002 v4.1 Attribution Protocol (GCLID Persistence)
-        if (location.search.includes('gclid=')) {
-            const params = new URLSearchParams(location.search)
-            const gclid = params.get('gclid')
-            if (gclid) {
-                await setGclidCookie(gclid)
-            }
-        }
-    },
     head: () => ({
         meta: [
             { charSet: 'utf-8' },
@@ -45,6 +28,15 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+    Solid.onMount(() => {
+        // DE-002 v4.1 Attribution Protocol (GCLID Persistence)
+        const params = new URLSearchParams(window.location.search)
+        const gclid = params.get('gclid')
+        if (gclid) {
+            document.cookie = `gclid=${gclid}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`
+        }
+    })
+
     return (
         <RootDocument>
             <Outlet />

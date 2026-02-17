@@ -9,7 +9,36 @@ import {
 
 import "../app.css"
 
+import { getCookie, setCookie } from 'vinxi/http'
+
 export const Route = createRootRoute({
+    beforeLoad: async ({ location }) => {
+        // DE-002 v4.1 Attribution Protocol (GCLID Persistence)
+        if (location.search.includes('gclid=')) {
+            const params = new URLSearchParams(location.search)
+            const gclid = params.get('gclid')
+
+            if (gclid) {
+                // Check if cookie already exists to avoid redundant set-cookie headers
+                // We use a server-only check here since beforeLoad runs on server during SSR/First Load
+                try {
+                    const existing = getCookie('gclid')
+                    if (existing !== gclid) {
+                        setCookie('gclid', gclid, {
+                            httpOnly: true,
+                            secure: true,
+                            sameSite: 'lax',
+                            maxAge: 60 * 60 * 24 * 30, // 30 Days
+                            path: '/',
+                        })
+                    }
+                } catch (e) {
+                    // Ignore errors in environments where vinxi/http is not available (e.g. client-side nav)
+                    // Attribution is primarily a first-touch (server) concern.
+                }
+            }
+        }
+    },
     head: () => ({
         meta: [
             { charSet: 'utf-8' },

@@ -84,14 +84,16 @@ Edit `.env` to add production secrets (`DATABASE_URL`, `BETTER_AUTH_SECRET`, etc
 ---
 
 ## 4. Service Management (PM2)
-
 We use **PM2** to manage Node.js processes.
 
 ```bash
-# Start the app
-pm2 start ecosystem.config.cjs --name <project_name>
+# 1. Update the app name in the ecosystem config
+sed -i "s/name: 'APP_NAME'/name: '<project_name>'/g" ecosystem.config.cjs
 
-# Save the process list (so it restarts on reboot)
+# 2. Start the app
+pm2 start ecosystem.config.cjs
+
+# 3. Save the process list (so it restarts on reboot)
 pm2 save
 ```
 

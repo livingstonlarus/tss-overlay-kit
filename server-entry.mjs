@@ -3,6 +3,7 @@ import { Readable } from 'node:stream';
 import { join, extname } from 'node:path';
 import { readFile, stat } from 'node:fs/promises';
 import handler from './dist/server/server.js';
+import 'dotenv/config';
 
 const MIME_TYPES = {
     '.html': 'text/html',

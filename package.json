@@ -17,6 +17,7 @@
     "@tanstack/solid-start": "^1.132.25",
     "autoprefixer": "^10.4.24",
     "better-auth": "^1.4.17",
+    "dotenv": "^16.4.7",
     "@neondatabase/serverless": "^0.10.4",
     "drizzle-orm": "^0.45.1",
     "lucide-solid": "^0.544.0",

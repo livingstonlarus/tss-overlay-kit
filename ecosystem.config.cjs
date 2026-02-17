@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: 'tss-app',
+            name: 'APP_NAME',
             script: 'server-entry.mjs',
             env: {
                 NODE_ENV: 'production',

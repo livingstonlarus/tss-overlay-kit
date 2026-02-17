@@ -40,12 +40,11 @@ This kit is designed to be overlayed onto a fresh TanStack CLI scaffold using Gi
     ```
 
 3.  **Install Dependencies:**
+    
+    The overlay kit includes a "battery-included" `package.json` with all standard stack dependencies (Tailwind, Drizzle, Better Auth, Neon, PM2, Resend).
+
     ```bash
     pnpm install
-    # Install standard stack if missing from CLI scaffold
-    pnpm add -D tailwindcss postcss autoprefixer
-    pnpm add @tanstack/solid-query @tanstack/solid-router
-    pnpm add better-auth drizzle-orm @neondatabase/serverless
     ```
 
 4.  **Start Development Server:**

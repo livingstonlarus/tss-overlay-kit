@@ -9,33 +9,30 @@ import {
 
 import "../app.css"
 
-// vinxi/http is a server-only module. Do NOT import at top level.
+import { createServerFn } from '@tanstack/solid-start'
+
+const setGclidCookie = createServerFn('GET', async (gclid: string) => {
+    const { getCookie, setCookie } = await import('vinxi/http')
+    const existing = getCookie('gclid')
+    if (existing !== gclid) {
+        setCookie('gclid', gclid, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 30, // 30 Days
+            path: '/',
+        })
+    }
+})
 
 export const Route = createRootRoute({
     beforeLoad: async ({ location }) => {
         // DE-002 v4.1 Attribution Protocol (GCLID Persistence)
-        // Only run on server to avoid vinxi/http resolution issues in browser
-        if (typeof window === 'undefined' && location.search.includes('gclid=')) {
+        if (location.search.includes('gclid=')) {
             const params = new URLSearchParams(location.search)
             const gclid = params.get('gclid')
-
             if (gclid) {
-                try {
-                    // Dynamic import vinxi/http only when needed on server
-                    const { getCookie, setCookie } = await import('vinxi/http')
-                    const existing = getCookie('gclid')
-                    if (existing !== gclid) {
-                        setCookie('gclid', gclid, {
-                            httpOnly: true,
-                            secure: true,
-                            sameSite: 'lax',
-                            maxAge: 60 * 60 * 24 * 30, // 30 Days
-                            path: '/',
-                        })
-                    }
-                } catch (e) {
-                    // Ignore errors in environments where server functions are handled differently
-                }
+                await setGclidCookie(gclid)
             }
         }
     },

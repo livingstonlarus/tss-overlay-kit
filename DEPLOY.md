@@ -161,6 +161,12 @@ doas nginx -t
 doas rcctl reload nginx
 ```
 
+### 5.4. Persist Processes
+Ensure all apps are online, then save the PM2 list so it survives a reboot:
+```bash
+pm2 save
+```
+
 ---
 
 ## 6. Updates (Orphan Branch Strategy)

@@ -5,7 +5,6 @@ module.exports = {
             script: 'server-entry.mjs',
             env: {
                 NODE_ENV: 'production',
-                PORT: 3000,
             },
             exec_mode: 'fork',
             instances: 1,

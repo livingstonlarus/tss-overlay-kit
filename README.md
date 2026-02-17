@@ -7,11 +7,11 @@
 
 ## 🚀 Overview
 
-- **Objective**: [Main Goal]
+- **Objective**: Standardized Boilerplate for high-performance TSS applications.
 - **Architecture**: TanStack Start (SolidJS + Vinxi) + Neon (Postgres) + Better Auth.
-- **Attribution**: Built-in GCLID Persistence (30-day HttpOnly cookie).
-- **Value Proposition**: Standardized "Overlay" for instant DE-002 compliance.
-- **Model**: Battery-included development for enterprise TSS apps.
+- **Attribution**: DE-002 v4.1 Compliant (Client-side GCLID persistence).
+- **Stability**: Isolated server entries (dotenv) for robust OpenBSD deployment.
+- **Visual Identity**: DE-004 v5.2 "Pure White / Obsidian" System.
 
 ## 🛠️ Technology Stack
 
@@ -34,4 +34,4 @@
 
 ## 🚦 Status
 
-**Current Version**: v0.1.2 (Attribution Protocol)
+**Current Version**: v0.3.1 (Production Readiness Overhaul)

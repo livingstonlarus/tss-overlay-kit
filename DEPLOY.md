@@ -103,16 +103,28 @@ pm2 save
 
 ## 5. SSL & Nginx
 
-### 5.1. Obtain SSL Certificate (ACME)
-Add the domain to `/etc/acme-client.conf` and request a certificate.
+### 5.1. Update acme-client.conf
+Add the domain to `/etc/acme-client.conf`.
 
-```bash
-# 1. Add domain to acme-client.conf (requires doas)
-# 2. Request cert
-doas acme-client <domain.com>
+```nginx
+domain <domain.com> {
+        alternative names { www.<domain.com> }
+        domain key "/etc/ssl/private/<domain.com>.key"
+        domain full chain certificate "/etc/ssl/<domain.com>.crt"
+        sign with letsencrypt
+}
 ```
 
-### 5.2. Configure Nginx
+### 5.2. Bootstrap SSL (The Chicken & Egg Fix)
+Nginx will fail to start if it references certificates that don't exist yet. Use this bootstrap procedure:
+
+1.  **Modify Nginx**: Comment out the `listen 443 ssl` block for the new domain.
+2.  **Reload Nginx**: `doas nginx -t && doas rcctl reload nginx` (This opens Port 80 for the challenge).
+3.  **Request Cert**: `doas acme-client <domain.com>`
+4.  **Restore Nginx**: Uncomment the SSL block.
+5.  **Final Reload**: `doas nginx -t && doas rcctl reload nginx`
+
+### 5.3. Configure Nginx
 Create or update the server block in `/etc/nginx/nginx.conf`.
 
 **Reverse Proxy Template (Node.js Apps):**
@@ -155,13 +167,13 @@ server {
 }
 ```
 
-### 5.3. Reload Nginx
+### 5.4. Reload Nginx
 ```bash
 doas nginx -t
 doas rcctl reload nginx
 ```
 
-### 5.4. Persist Processes
+### 5.5. Persist Processes
 Ensure all apps are online, then save the PM2 list so it survives a reboot:
 ```bash
 pm2 save

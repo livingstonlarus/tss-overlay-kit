@@ -56,83 +56,12 @@ This kit is designed to be overlayed onto a fresh TanStack CLI scaffold using Gi
 
 ## 🌍 Production Deployment (OpenBSD)
 
-### Target Environment
-- **OS**: OpenBSD
-- **Directory**: `/var/www/htdocs/<project_name>`
-- **Port**: `3000` (Default)
-- **Process Manager**: PM2
-- **Web Server**: Nginx (Reverse Proxy + ACME SSL)
+For detailed, step-by-step production deployment on the Daemon Engineering infrastructure, please refer to:
+👉 **[DEPLOY.md](./DEPLOY.md)**
 
-### Deployment Protocol (Git Strategy)
-
-1. **Update Codebase:**
-   SSH into the server and pull the latest changes.
-   ```bash
-   cd /var/www/htdocs/<project_name>
-   git pull origin main
-   ```
-
-2. **Install & Build:**
-   ```bash
-   pnpm install --prod
-   pnpm build
-   ```
-
-3. **Database Migrations:**
-   Ensure your Neon database is accessible and run migrations:
-   ```bash
-   npx drizzle-kit migrate
-   ```
-
-4. **Restart Service (PM2):**
-   ```bash
-   pm2 restart <project_name>
-   ```
-
-### Nginx Configuration (Reverse Proxy Template)
-
-Configure Nginx to proxy traffic to the app port (default 3000) and handle SSL via ACME.
-
-```nginx
-server {
-    listen 80;
-    listen [::]:80;
-    server_name example.com www.example.com;
-
-    # ACME Challenge
-    location /.well-known/acme-challenge/ {
-        root /var/www/acme;
-    }
-
-    # Redirect HTTP to HTTPS
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
-    server_name example.com www.example.com;
-
-    ssl_certificate /etc/ssl/example.com.fullchain.pem;
-    ssl_certificate_key /etc/ssl/private/example.com.key;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-### Verification
-- Check PM2 status: `pm2 status`
-- Check logs: `pm2 logs <project_name>`
-- Verify HTTPS access: `curl -I https://example.com`
+### Key Highlights:
+- **OS**: OpenBSD 7.x
+- **Build**: `pnpm build` (generates SSR + Client artifacts)
+- **Runtime**: Node.js v22 via PM2
+- **Proxy**: Nginx + ACME SSL
+- **Persistence**: `pm2 save` for reboot survival

@@ -1,22 +1,19 @@
 import { createRouter as createTanStackRouter } from '@tanstack/solid-router'
 import { routeTree } from './routeTree.gen'
 
-export function createRouter() {
+export function getRouter() {
     const router = createTanStackRouter({
         routeTree,
         // DE-002 v4.1 Speed Config
-        defaultPreload: 'intent',
-        defaultStaleTime: 5000,
         scrollRestoration: true,
+        defaultPreload: 'intent',
+        defaultPreloadStaleTime: 5000,
     })
     return router
 }
 
-// TanStack Start expects getRouter
-export const getRouter = createRouter
-
 declare module '@tanstack/solid-router' {
     interface Register {
-        router: ReturnType<typeof createRouter>
+        router: ReturnType<typeof getRouter>
     }
 }

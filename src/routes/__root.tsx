@@ -1,15 +1,17 @@
-import * as Solid from 'solid-js'
-import { HydrationScript } from 'solid-js/web'
 import {
-    Outlet,
-    createRootRoute,
     HeadContent,
+    Outlet,
     Scripts,
+    createRootRoute,
 } from '@tanstack/solid-router'
 
-import "../app.css"
+import { HydrationScript } from 'solid-js/web'
+import { Suspense } from 'solid-js'
+
+import appCss from '../app.css?url'
 
 import { trackTraffic } from '../server/attribution'
+import { getLocale } from '../paraglide/runtime'
 
 // Define search params validation
 type SearchParams = {
@@ -36,6 +38,8 @@ export const Route = createRootRoute({
             { name: 'theme-color', content: '#0057FF' },
         ],
         links: [
+            // App CSS (Tailwind v3 via PostCSS)
+            { rel: 'stylesheet', href: appCss },
             // DE-004 §2 Typography: Barlow Condensed (headers), Manrope (controls), JetBrains Mono (data), Inter (body)
             { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
             { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
@@ -46,30 +50,21 @@ export const Route = createRootRoute({
             { rel: 'manifest', href: '/manifest.json' },
         ],
     }),
-    component: RootComponent,
+    // Use shellComponent (latest TanStack Start pattern)
+    shellComponent: RootShell,
 })
 
-function RootComponent() {
-    return (
-        <RootDocument>
-            <Outlet />
-        </RootDocument>
-    )
-}
-
-import { getLocale } from '../paraglide/runtime'
-
-function RootDocument(props: Readonly<{ children: Solid.JSX.Element }>) {
+function RootShell() {
     return (
         <html lang={getLocale()}>
             <head>
-                <HeadContent />
                 <HydrationScript />
             </head>
             <body>
-                <Solid.Suspense fallback={<div>Loading...</div>}>
-                    {props.children}
-                </Solid.Suspense>
+                <HeadContent />
+                <Suspense>
+                    <Outlet />
+                </Suspense>
                 <Scripts />
             </body>
         </html>

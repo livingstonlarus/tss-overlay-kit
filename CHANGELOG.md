@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-02-18
+### Changed
+- **`router.tsx`**: Renamed `createRouter` → `getRouter` (matches `tanstack create` scaffold convention). Uses `defaultPreloadStaleTime` property.
+- **`__root.tsx`**: Aligned to latest TanStack Start API — uses `shellComponent` pattern, `HeadContent` in body (streaming), CSS via `?url` import.
+- **`package.json`**: Version set to `0.0.0` placeholder (downstream projects set their own).
+### Removed
+- **`public/favicon.ico`**: Removed empty placeholder — scaffold provides a real favicon that should be preserved during overlay.
+### Fixed
+- **Tailwind v4 compatibility**: Overlay cleanly replaces scaffold's Tailwind v4 (`@tailwindcss/vite`) with v3 (PostCSS). Cleanup step documented for orphaned `src/styles.css`.
+
 ## [1.2.0] - 2026-02-18
 ### Added
 - **Valibot**: Input validation layer (replaces Zod). DE-002 §3.2.

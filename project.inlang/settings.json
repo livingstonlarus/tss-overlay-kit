@@ -26,7 +26,15 @@
         "et"
     ],
     "modules": [
-        "https://cdn.jsdelivr.net/npm/@inlang/paraglide-js@1.11.1/dist/index.js",
-        "https://cdn.jsdelivr.net/npm/@inlang/plugin-paraglide@1.4.0/dist/index.js"
-    ]
+        "https://cdn.jsdelivr.net/npm/@inlang/plugin-json@3/dist/index.js",
+        "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-empty-pattern@1/dist/index.js",
+        "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-identical-pattern@1/dist/index.js",
+        "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-without-source@1/dist/index.js",
+        "https://cdn.jsdelivr.net/npm/@inlang/message-lint-rule-missing-translation@1/dist/index.js"
+    ],
+    "settings": {
+        "plugin.inlang.json": {
+            "pathPattern": "./messages/{languageTag}.json"
+        }
+    }
 }

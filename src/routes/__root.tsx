@@ -26,7 +26,7 @@ export const Route = createRootRoute({
             gclid: typeof (search as any).gclid === 'string' ? (search as any).gclid : undefined,
         }
     },
-    beforeLoad: async ({ location, request }) => {
+    beforeLoad: async ({ location, request }: any) => {
         // DE-002 §7.1 — Automatic Locale Redirection
         // 'request' is only available during SSR
         const headers = request ? request.headers : new Headers()

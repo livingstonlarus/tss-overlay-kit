@@ -1,4 +1,4 @@
-import { baseLocale, locales, type Locale, setLocale } from '../paraglide/runtime'
+import { baseLocale, locales, type Locale } from '../paraglide/runtime'
 
 /**
  * Resolves the locale for a given request using the "Truth Cascade" protocol.

@@ -1,9 +1,10 @@
+import 'dotenv/config';
 import { createServer } from 'node:http';
 import { Readable } from 'node:stream';
 import { join, extname } from 'node:path';
 import { readFile, stat } from 'node:fs/promises';
-import handler from './dist/server/server.js';
-import 'dotenv/config';
+
+const handlerPromise = import('./dist/server/server.js').then(m => m.default);
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -69,6 +70,7 @@ const server = createServer(async (req, res) => {
         }
 
         const webReq = await createWebRequest(req);
+        const handler = await handlerPromise;
         const webRes = await handler.fetch(webReq);
 
         res.statusCode = webRes.status;

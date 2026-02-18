@@ -9,15 +9,37 @@ import {
 
 import "../app.css"
 
+import { trackTraffic } from '../server/attribution'
+
+// Define search params validation
+type SearchParams = {
+    gclid?: string
+}
+
 export const Route = createRootRoute({
+    validateSearch: (search: Record<string, unknown>): SearchParams => {
+        return {
+            gclid: typeof (search as any).gclid === 'string' ? (search as any).gclid : undefined,
+        }
+    },
+    loader: async ({ location }) => {
+        // DE-002 v4.1 Attribution Protocol (Server-Side)
+        const gclid = location.search.gclid
+        const { sessionId } = await trackTraffic({ data: { gclid } })
+        return { sessionId }
+    },
     head: () => ({
         meta: [
             { charSet: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             { title: 'New TSS App' },
+            { name: 'theme-color', content: '#0057FF' },
         ],
         links: [
-            { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+            // DE-004 §2 Typography: Barlow Condensed (headers), Manrope (controls), JetBrains Mono (data), Inter (body)
+            { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+            { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
+            { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap' },
             // DE-002 v4.1 PWA Standards
             { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
             { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
@@ -28,15 +50,6 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-    Solid.onMount(() => {
-        // DE-002 v4.1 Attribution Protocol (GCLID Persistence)
-        const params = new URLSearchParams(window.location.search)
-        const gclid = params.get('gclid')
-        if (gclid) {
-            document.cookie = `gclid=${gclid}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`
-        }
-    })
-
     return (
         <RootDocument>
             <Outlet />
@@ -44,16 +57,18 @@ function RootComponent() {
     )
 }
 
-function RootDocument({ children }: Readonly<{ children: Solid.JSX.Element }>) {
+import { getLocale } from '../paraglide/runtime'
+
+function RootDocument(props: Readonly<{ children: Solid.JSX.Element }>) {
     return (
-        <html lang="en">
+        <html lang={getLocale()}>
             <head>
                 <HeadContent />
                 <HydrationScript />
             </head>
             <body>
                 <Solid.Suspense fallback={<div>Loading...</div>}>
-                    {children}
+                    {props.children}
                 </Solid.Suspense>
                 <Scripts />
             </body>

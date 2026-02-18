@@ -1,0 +1,32 @@
+{
+    "$schema": "https://inlang.com/schema/project-settings",
+    "sourceLanguageTag": "en",
+    "languageTags": [
+        "en",
+        "fr",
+        "de",
+        "it",
+        "es",
+        "pl",
+        "ro",
+        "nl",
+        "pt",
+        "hu",
+        "el",
+        "cs",
+        "sv",
+        "bg",
+        "da",
+        "fi",
+        "sk",
+        "hr",
+        "lt",
+        "sl",
+        "lv",
+        "et"
+    ],
+    "modules": [
+        "https://cdn.jsdelivr.net/npm/@inlang/paraglide-js@1.11.1/dist/index.js",
+        "https://cdn.jsdelivr.net/npm/@inlang/plugin-paraglide@1.4.0/dist/index.js"
+    ]
+}

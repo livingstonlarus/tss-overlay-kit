@@ -8,15 +8,11 @@ export default {
             borderRadius: {
                 DEFAULT: '0px',
             },
-            letterSpacing: {
-                'technical': '0.3em', // For Tagline
-                'block': '-0.025em',  // For Logotype
-            },
             colors: {
-                // Semantic Colors mapped to CSS Vars
+                // Structural (Adaptive) — DE-002 §13.2
                 dashboard: {
-                    base: 'rgb(var(--bg-dashboard) / <alpha-value>)',
-                    slot: 'rgb(var(--bg-slot) / <alpha-value>)',
+                    matte: 'rgb(var(--bg-dashboard) / <alpha-value>)',
+                    dim: 'rgb(var(--bg-dim) / <alpha-value>)',
                 },
                 din: {
                     border: 'rgb(var(--border-din) / <alpha-value>)',
@@ -25,18 +21,18 @@ export default {
                     main: 'rgb(var(--text-main) / <alpha-value>)',
                     dim: 'rgb(var(--text-dim) / <alpha-value>)',
                 },
-                // Safety Signals (Constant)
-                signal: {
+                // Backlights (Constant — High Saturation) — DE-002 §13.2
+                backlight: {
                     orange: '#FF5F00',
                     green: '#00D445',
                     blue: '#0057FF',
-                    crimson: '#DC2626',
                 }
             },
             fontFamily: {
+                // DE-004 §2 Typography
                 headline: ['Barlow Condensed', 'sans-serif'],
                 label: ['Manrope', 'sans-serif'],
-                mono: ['JetBrains Mono', 'monospace'],
+                readout: ['JetBrains Mono', 'monospace'],
                 sans: ['Inter', 'sans-serif'],
             },
             backgroundImage: {

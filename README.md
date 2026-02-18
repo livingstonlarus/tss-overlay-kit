@@ -1,37 +1,72 @@
 # TSS Overlay Kit
 
-**The Official Daemon Engineering Overlay for TanStack Start.**
-**Operationalized by Daemon Engineering.**
+**Version:** 1.2.0 | **Standard:** DE-002 v4.1 | **Visual:** DE-004 v5.2
 
-[Project Overview / Objective]
+The canonical starter template for all TanStack Start + SolidJS projects under the Daemon Engineering protocol.
 
-## 🚀 Overview
+## Stack
 
-- **Objective**: Standardized Boilerplate for high-performance TSS applications.
-- **Architecture**: TanStack Start (SolidJS + Vinxi) + Neon (Postgres) + Better Auth.
-- **Attribution**: DE-002 v4.1 Compliant (Client-side GCLID persistence).
-- **Stability**: Isolated server entries (dotenv) for robust OpenBSD deployment.
-- **Visual Identity**: DE-004 v5.2 "Pure White / Obsidian" System.
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | TanStack Start (Solid) + Vinxi |
+| **View** | SolidJS (fine-grained reactivity) |
+| **UI** | Kobalte (headless) + Tailwind CSS v3 |
+| **Data** | Drizzle ORM + Postgres.js |
+| **Auth** | Better Auth |
+| **Payments** | Stripe + GoCardless |
+| **Email** | Resend |
+| **i18n** | Paraglide JS (22 SEPA locales) |
+| **Validation** | Valibot |
+| **Ads** | GCLID Persistence + Google Ads Offline Upload |
+| **Process** | PM2 (ecosystem.config.cjs) |
+| **Security** | Semgrep gate |
 
-## 🛠️ Technology Stack
+## Quick Start
 
-- **Core**: [TanStack Start](https://tanstack.com/start) (SolidJS + Vinxi)
-- **Runtime**: Node.js v22 (LTS)
-- **Database**: [Neon](https://neon.tech) (PostgreSQL) + Drizzle ORM
-- **Authentication**: Better Auth (Self-Hosted)
-- **Email**: Resend
-- **Styling**: Tailwind CSS v3 (DE-004 Visual Identity / DIN Console)
-- **Deployment**: OpenBSD (PM2 + Nginx)
-- **Design Standard**: DE-004 Visual Identity System v5.2
+```bash
+# 1. Clone the kit into your new project
+cp -R tss-overlay-kit my-new-project
+cd my-new-project
 
-## 📦 Project Structure
+# 2. Update package.json name
+# Edit "name" field in package.json
 
-- `src/`: Application source code (Routes, Components, Server Functions).
-- `public/`: Static Assets (Manifest, Icons).
-- `knowledge/`: Project specifications and engineering standards (Antigravity).
-- `.agent/workflows/`: Automated agent workflows.
-- `ecosystem.config.cjs`: PM2 Production configuration.
+# 3. Install dependencies
+pnpm install
 
-## 🚦 Status
+# 4. Set up environment
+cp .env.example .env
+# Fill in DATABASE_URL, BETTER_AUTH_SECRET, etc.
 
-**Current Version**: v1.0.0 (Ironclad Production Release)
+# 5. Run dev server
+pnpm dev
+```
+
+See [INSTALL.md](INSTALL.md) for detailed setup and [DEPLOY.md](DEPLOY.md) for production deployment.
+
+## Kit Contents
+
+```
+├── docs/                    # Reference standards (DE-002, DE-004, TanStack)
+├── public/                  # Static assets (manifest.json, robots.txt, favicons)
+├── src/
+│   ├── components/ui/       # Kobalte + Tailwind components (Button, etc.)
+│   ├── lib/                 # Utilities (cn, i18n resolver)
+│   ├── paraglide/           # Generated i18n runtime (22 SEPA locales)
+│   ├── routes/              # File-system routing (__root.tsx, index.tsx)
+│   └── server/              # Backend (db, auth, payments, email, attribution)
+├── server-entry.mjs         # Custom Node.js entry (graceful shutdown)
+├── ecosystem.config.cjs     # PM2 process manager config
+├── tailwind.config.js       # DIN Console design tokens
+└── project.inlang/          # Paraglide i18n configuration
+```
+
+## Standards Compliance
+
+- **DE-002 v4.1** — Engineering Standard (architecture, security, deployment)
+- **DE-004 v5.2** — Visual Identity System ("Clinical Instrument" aesthetic)
+- **OpenBSD compatible** — No Nitro, no Edge drivers, no lightningcss
+
+## License
+
+Private — Daemon Engineering

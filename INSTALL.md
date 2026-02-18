@@ -1,67 +1,68 @@
-# Installation and Deployment Guide
+# INSTALL — TSS Overlay Kit
 
-## 💻 Local Development (macOS)
+## Prerequisites
 
-### Prerequisites
-- Node.js v22+
-- pnpm
+- **Node.js** v22+ (LTS)
+- **pnpm** v10+
+- **PostgreSQL** (Neon or local)
 
-### Setup (The Orphan Branch Strategy)
+## Environment Setup
 
-This kit is designed to be overlayed onto a fresh TanStack CLI scaffold using Git.
+```bash
+# Copy example env
+cp .env.example .env
+```
 
-1.  **Scaffold Project (TanStack CLI):**
-    Use the official CLI to generate the base structure.
-    ```bash
-    npx @tanstack/cli create <project_name>
-    ```
-    *   **Select**: `Start` -> `Solid` -> `Vinxi` -> `None/Basic`
-    *   **Skip**: Drizzle/Auth (we overlay these manually via template standards)
+### Required Variables
 
-2.  **Apply The Overlay (Git Merge):**
-    We use a dedicated "overlay" remote to merge our standards without messy copying.
-    
-    ```bash
-    cd <project_name>
-    
-    # 1. Add the Overlay Kit as a remote
-    git remote add overlay <git-url-to-tss-overlay-kit>
-    git fetch overlay
-    
-    # 2. Checkout the overlay files (Force Overwrite)
-    # This pulls all files from the overlay kit into your working directory
-    git checkout overlay/main -- .
-    
-    # 3. Review & Commit
-    # You will see the diffs. Verify the standards are applied.
-    git add .
-    git commit -m "feat: apply DE-002 overlay standards"
-    ```
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Random 32+ char secret |
+| `BETTER_AUTH_URL` | App URL (e.g. `http://localhost:3000`) |
+| `RESEND_API_KEY` | Resend transactional email key |
+| `STRIPE_SECRET_KEY` | Stripe API secret |
+| `GOCARDLESS_ACCESS_TOKEN` | GoCardless SEPA token |
+| `GOOGLE_ADS_CUSTOMER_ID` | Google Ads customer ID (for OCI upload) |
 
-3.  **Install Dependencies:**
-    
-    The overlay kit includes a "battery-included" `package.json` with all standard stack dependencies (Tailwind, Drizzle, Better Auth, Neon, PM2, Resend).
+## Installation
 
-    ```bash
-    pnpm install
-    ```
+```bash
+pnpm install
+```
 
-4.  **Start Development Server:**
-    ```bash
-    pnpm dev
-    ```
-    The app will be available at `http://localhost:3000`.
+## Database
 
----
+```bash
+# Generate migrations from schema
+pnpm drizzle-kit generate
 
-## 🌍 Production Deployment (OpenBSD)
+# Run migrations
+pnpm drizzle-kit migrate
+```
 
-For detailed, step-by-step production deployment on the Daemon Engineering infrastructure, please refer to:
-👉 **[DEPLOY.md](./DEPLOY.md)**
+## i18n (Paraglide)
 
-### Key Highlights:
-- **OS**: OpenBSD 7.x
-- **Build**: `pnpm build` (generates SSR + Client artifacts)
-- **Runtime**: Node.js v22 via PM2
-- **Proxy**: Nginx + ACME SSL
-- **Persistence**: `pm2 save` for reboot survival
+Translations compile automatically during build. To manually compile:
+
+```bash
+pnpm paraglide:check
+```
+
+Message files: `project.inlang/` → generates to `src/paraglide/`
+
+## Development
+
+```bash
+pnpm dev        # Dev server on port 3000
+pnpm build      # Production build
+pnpm typecheck  # TypeScript check
+```
+
+## Adapting This Kit
+
+1. Change `name` in `package.json`
+2. Change `APP_NAME` in `ecosystem.config.cjs`
+3. Update `manifest.json` with your app name/icons
+4. Update font links in `__root.tsx` if needed
+5. Set environment variables in `.env`

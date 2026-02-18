@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+.vinxi/
+
+# Generated code
+src/paraglide/
+src/routeTree.gen.ts
+
+# Config
+*.config.js
+*.config.cjs
+*.config.ts

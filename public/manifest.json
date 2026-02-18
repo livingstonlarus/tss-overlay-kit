@@ -1,13 +1,11 @@
 {
     "name": "TSS App",
-    "short_name": "TSS App",
-    "description": "A TanStack Start Application",
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "display": "standalone",
-    "orientation": "portrait",
+    "short_name": "TSS",
     "start_url": "/",
-    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0A0A12",
+    "theme_color": "#0057FF",
+    "description": "A TSS application built with TanStack Start + SolidJS",
     "icons": [
         {
             "src": "/favicon-32x32.png",

@@ -1,9 +1,11 @@
 {
     "include": [
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "src/paraglide/*.js"
     ],
     "compilerOptions": {
+        "allowJs": true,
         "target": "ES2022",
         "jsx": "preserve",
         "jsxImportSource": "solid-js",

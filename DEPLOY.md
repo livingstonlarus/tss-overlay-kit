@@ -1,93 +1,59 @@
-# DEPLOY — TSS Overlay Kit
+# Deployment Guide
 
-## Target: OpenBSD (Metal Server)
-
-All projects under DE-002 v4.1 deploy to OpenBSD via Git strategy.  
-**DO NOT** use rsync/scp for code deployment.
-
-## Strategy
+## Architecture
 
 ```
-Git Pull → pnpm install → pnpm build → PM2 reload
+Client → nginx (SSL termination) → PM2 (Node.js cluster) → App
 ```
 
-## Prerequisites (Server)
+## Prerequisites
 
-- Node.js v22+ (via pkg_add)
-- pnpm v10+
-- PM2 (`pnpm add -g pm2`)
-- Git configured with SSH key
+- **OpenBSD** server with `nginx`, `node`, and `pm2` installed
+- SSL certificates (Let's Encrypt via `acme-client`)
+- Git access to the repository
 
-## First Deployment
+## Production Build
 
 ```bash
-# 1. Clone repository
-git clone git@github.com:livingstonlarus/APP_NAME.git /var/www/htdocs/APP_NAME
-cd /var/www/htdocs/APP_NAME
-
-# 2. Install dependencies
-pnpm install
-
-# 3. Set environment variables
-cp .env.example .env
-# Fill in production values
-
-# 4. Build
 pnpm build
+```
 
-# 5. Start with PM2
-# First update ecosystem.config.cjs — change APP_NAME and PORT
+Output is placed in `.output/`.
+
+## PM2 Setup
+
+Update `ecosystem.config.cjs` for your project:
+
+```js
+name: 'your-app-name',   // Replace with project name
+env: {
+    PORT: 3001,           // Replace with assigned port
+}
+```
+
+```bash
+# Start
 pm2 start ecosystem.config.cjs
-pm2 save
+
+# Monitor
+pm2 monit
+
+# Logs
+pm2 logs your-app-name
 ```
 
-## Subsequent Deployments
-
-```bash
-cd /var/www/htdocs/APP_NAME
-git pull origin main
-pnpm install
-pnpm build
-pm2 reload APP_NAME
-```
-
-## Pre-Release Checklist (DE-002 §3.3)
-
-```bash
-# 1. Type check
-pnpm typecheck
-
-# 2. Build
-pnpm build
-
-# 3. Semgrep security scan
-semgrep --config auto src/
-```
-
-Any Semgrep finding with `severity: error` is a **Hard Block**.
-
-## Server Entry
-
-Runtime command: `PORT=<port> node server-entry.mjs`
-
-The `server-entry.mjs` wrapper:
-- Loads `.env` via dotenv
-- Serves static files from `dist/client/`
-- Routes all other requests to the TanStack handler
-- Handles SIGINT/SIGTERM for graceful PM2 reload
-
-## Reverse Proxy (nginx)
+## nginx Reverse Proxy
 
 ```nginx
 server {
     listen 443 ssl;
-    server_name APP_NAME.com;
+    server_name yourdomain.com;
 
-    ssl_certificate /etc/ssl/APP_NAME.com.fullchain.pem;
-    ssl_certificate_key /etc/ssl/private/APP_NAME.com.key;
+    ssl_certificate     /etc/ssl/yourdomain.com.fullchain.pem;
+    ssl_certificate_key /etc/ssl/private/yourdomain.com.key;
 
     location / {
-        proxy_pass http://127.0.0.1:PORT;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -98,4 +64,34 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 }
+
+server {
+    listen 80;
+    server_name yourdomain.com;
+    return 301 https://$host$request_uri;
+}
 ```
+
+## Git Deploy Strategy
+
+```bash
+# On server
+cd /var/www/htdocs/your-app
+git pull origin main
+pnpm install --frozen-lockfile
+pnpm build
+pm2 restart your-app-name
+```
+
+## Pre-Release Checklist
+
+Before any release:
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+npx @semgrep/semgrep --config auto .
+```
+
+All four must pass. If any fails, do not release.

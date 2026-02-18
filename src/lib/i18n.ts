@@ -1,7 +1,9 @@
-// DE-002 §7.1 — The "Truth Cascade" for locale resolution
-// Priority: Ads Query Param > URL Path > Cookie > GeoIP (Accept-Language)
-import { baseLocale, locales, type Locale } from '../paraglide/runtime'
+import { baseLocale, locales, type Locale, setLocale } from '../paraglide/runtime'
 
+/**
+ * Resolves the locale for a given request using the "Truth Cascade" protocol.
+ * Priority: 1. Ads (GCLID/gl/lang) > 2. Path (/fr/...) > 3. Cookie > 4. GeoIP (Accept-Language)
+ */
 export function resolveLocale(url: URL, headers: Headers): Locale {
     // 1. The "Ads" Override (Highest Priority)
     const queryLang = url.searchParams.get('lang') || url.searchParams.get('gl')
@@ -36,6 +38,6 @@ export function resolveLocale(url: URL, headers: Headers): Locale {
     return baseLocale
 }
 
-function isAvailableLocale(locale: string): boolean {
+export function isAvailableLocale(locale: string): boolean {
     return (locales as readonly string[]).includes(locale.toLowerCase())
 }

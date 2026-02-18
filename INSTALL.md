@@ -1,68 +1,70 @@
-# INSTALL — TSS Overlay Kit
+# Installation Guide
 
 ## Prerequisites
 
-- **Node.js** v22+ (LTS)
-- **pnpm** v10+
+- **Node.js** ≥ 20.x
+- **pnpm** ≥ 9.x
 - **PostgreSQL** (Neon or local)
 
-## Environment Setup
+## Setup
 
 ```bash
-# Copy example env
+# Clone the repository
+git clone <repo-url>
+cd <project-name>
+
+# Install dependencies
+pnpm install
+
+# Configure environment
 cp .env.example .env
 ```
 
-### Required Variables
+## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Random 32+ char secret |
-| `BETTER_AUTH_URL` | App URL (e.g. `http://localhost:3000`) |
-| `RESEND_API_KEY` | Resend transactional email key |
-| `STRIPE_SECRET_KEY` | Stripe API secret |
-| `GOCARDLESS_ACCESS_TOKEN` | GoCardless SEPA token |
-| `GOOGLE_ADS_CUSTOMER_ID` | Google Ads customer ID (for OCI upload) |
+Edit `.env` with your credentials:
 
-## Installation
-
-```bash
-pnpm install
+```env
+DATABASE_URL=postgresql://user:pass@host/db?sslmode=require
+BETTER_AUTH_SECRET=<random-secret>
+RESEND_API_KEY=re_xxxx
+STRIPE_SECRET_KEY=sk_xxxx
+GOCARDLESS_ACCESS_TOKEN=<token>
+GOOGLE_ADS_CUSTOMER_ID=123-456-7890
 ```
 
 ## Database
 
 ```bash
-# Generate migrations from schema
+# Push schema to database
+pnpm drizzle-kit push
+
+# Generate migrations (optional)
 pnpm drizzle-kit generate
-
-# Run migrations
-pnpm drizzle-kit migrate
 ```
 
-## i18n (Paraglide)
+## i18n
 
-Translations compile automatically during build. To manually compile:
+Translations live in `messages/`. The default locale is `en`. To add a locale:
 
-```bash
-pnpm paraglide:check
-```
-
-Message files: `project.inlang/` → generates to `src/paraglide/`
+1. Add the locale code to `project.inlang/settings.json` → `locales`
+2. Create `messages/<locale>.json`
+3. Run `pnpm dev` — Paraglide auto-generates the runtime
 
 ## Development
 
 ```bash
-pnpm dev        # Dev server on port 3000
-pnpm build      # Production build
-pnpm typecheck  # TypeScript check
+pnpm dev          # Start dev server (port 3000)
+pnpm build        # Production build
+pnpm typecheck    # Type checking
+pnpm lint         # Lint
 ```
 
-## Adapting This Kit
+## Adapting for Your Project
 
-1. Change `name` in `package.json`
-2. Change `APP_NAME` in `ecosystem.config.cjs`
-3. Update `manifest.json` with your app name/icons
-4. Update font links in `__root.tsx` if needed
-5. Set environment variables in `.env`
+1. Update `name` in `package.json`
+2. Update `name` in `ecosystem.config.cjs`
+3. Update `short_name` and `name` in `public/manifest.json`
+4. Set your port in `ecosystem.config.cjs` and `package.json` scripts
+5. Replace favicons in `public/`
+6. Add your schema to `src/server/schema.ts`

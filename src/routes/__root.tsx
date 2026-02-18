@@ -1,15 +1,19 @@
-import * as Solid from 'solid-js'
-import { HydrationScript } from 'solid-js/web'
 import {
-    Outlet,
-    createRootRoute,
     HeadContent,
+    Outlet,
     Scripts,
+    createRootRoute,
+    redirect,
 } from '@tanstack/solid-router'
 
-import "../app.css"
+import { HydrationScript } from 'solid-js/web'
+import { Suspense } from 'solid-js'
+
+import appCss from '../app.css?url'
 
 import { trackTraffic } from '../server/attribution'
+import { getLocale, setLocale } from '../paraglide/runtime'
+import { resolveLocale, isAvailableLocale } from '../lib/i18n'
 
 // Define search params validation
 type SearchParams = {
@@ -22,9 +26,36 @@ export const Route = createRootRoute({
             gclid: typeof (search as any).gclid === 'string' ? (search as any).gclid : undefined,
         }
     },
+    beforeLoad: async ({ location, request }) => {
+        // DE-002 §7.1 — Automatic Locale Redirection
+        // 'request' is only available during SSR
+        const headers = request ? request.headers : new Headers()
+        const url = new URL(location.href)
+        const locale = resolveLocale(url, headers)
+
+        // Set the language tag for the request (both client and server)
+        setLocale(locale, { reload: false })
+
+        // If the path isn't starting with the resolved locale, redirect.
+        // Example: / -> /fr or /about -> /en/about
+        const pathSegment = location.pathname.split('/')[1]
+        const isLocalized = pathSegment && isAvailableLocale(pathSegment)
+
+        if (!isLocalized) {
+            const newPath = `/${locale}${location.pathname === '/' ? '' : location.pathname}`
+            throw redirect({
+                to: newPath,
+                search: location.search,
+                replace: true,
+            })
+        }
+
+        return { locale }
+    },
     loader: async ({ location }) => {
         // DE-002 v4.1 Attribution Protocol (Server-Side)
-        const gclid = location.search.gclid
+        const search = location.search as SearchParams
+        const gclid = search.gclid
         const { sessionId } = await trackTraffic({ data: { gclid } })
         return { sessionId }
     },
@@ -36,6 +67,8 @@ export const Route = createRootRoute({
             { name: 'theme-color', content: '#0057FF' },
         ],
         links: [
+            // App CSS (Tailwind v3 via PostCSS)
+            { rel: 'stylesheet', href: appCss },
             // DE-004 §2 Typography: Barlow Condensed (headers), Manrope (controls), JetBrains Mono (data), Inter (body)
             { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
             { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
@@ -46,30 +79,21 @@ export const Route = createRootRoute({
             { rel: 'manifest', href: '/manifest.json' },
         ],
     }),
-    component: RootComponent,
+    // Use shellComponent (latest TanStack Start pattern)
+    shellComponent: RootShell,
 })
 
-function RootComponent() {
-    return (
-        <RootDocument>
-            <Outlet />
-        </RootDocument>
-    )
-}
-
-import { getLocale } from '../paraglide/runtime'
-
-function RootDocument(props: Readonly<{ children: Solid.JSX.Element }>) {
+function RootShell() {
     return (
         <html lang={getLocale()}>
             <head>
-                <HeadContent />
                 <HydrationScript />
             </head>
             <body>
-                <Solid.Suspense fallback={<div>Loading...</div>}>
-                    {props.children}
-                </Solid.Suspense>
+                <HeadContent />
+                <Suspense>
+                    <Outlet />
+                </Suspense>
                 <Scripts />
             </body>
         </html>
